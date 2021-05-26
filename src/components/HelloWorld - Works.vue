@@ -8,19 +8,13 @@
     </p>
  
     <h2>Inline Editor</h2>
-    
-    <div class="content-container">
-       <editor v-model= "contentContainer" :api-key="apiKey" :init="contentContainerConfig" inline :initialValue="contentContainer"/>
+    <div class="content-title" :ref="'content-body'">
+      <editor v-model= "contentTitle" :api-key="apiKey" :init="contentTitleConfig" inline :initialValue="contentTitle"/>
     </div>
-    <div class="content-title">
-        <editor v-model= "contentTitle" :api-key="apiKey" :init="contentTitleConfig" inline :initialValue="contentTitle"/>
+    <div class="content-body" :ref="'content-body'">
+      <editor v-model= "contentBody" :api-key="apiKey" :init="contentBodyConfig" inline :initialValue="contentBody"/>
     </div>
-    <div class="content-body">
-        <editor v-model= "contentBody" :api-key="apiKey" :init="contentBodyConfig" inline :initialValue="contentBody"/>
-    </div>
-</div>
-   
- 
+  </div>
 </template>
 
 <script>
@@ -47,7 +41,6 @@ export default {
   data() {
         return {
           apiKey: "rso1c77gamhg1jssil5cuuob1j3zyz66ldpf94x3pxdkzhgc",
-          contentContainer: `Hi`,
           contentTitle: `<div class="" style="">15% OFF</div>`,
           contentBody:  `<p id = 'content-body' style="text-align: center;">
                     <strong><span style="font-size: 14pt;"><span style="color: #7e8c8d; font-weight: 600;">No matter what you're building, TinyMCE has got you covered.</span></span></strong>
@@ -67,87 +60,7 @@ export default {
               insert_toolbar: 'undo redo',
               selection_toolbar: 'italic underline',
             }, */
-             contentContainerConfig : {
-                selector: 'textarea',
-                height: 500,
-                width:600,
-                menubar: false,
-                fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt 60pt',
-                toolbar: [
-                    'undo redo | formatselect | bold italic strikethrough | forecolor backcolor | \
-                    alignleft aligncenter alignright alignjustify',
-                  'weight | subscript superscript |fontselect | fontsizeselect font-weight lineheight |removeformat'
-                ],
-
-                //https://www.tiny.cloud/docs/demo/custom-toolbar-menu-button/
-                setup: function (editor) {
-                  /* Menu items are recreated when the menu is closed and opened, so we need
-                     a variable to store the toggle menu item state. */
-                  var toggleState = false;
-
-                  /* example, adding a toolbar menu button */
-                  editor.ui.registry.addMenuButton('weight', {
-                    text: 'Weight',
-                    fetch: function (callback) {
-                      var items = [
-                        {
-                          type: 'menuitem',
-                          text: 'Light',
-                          onAction: function () {
-                            let content = getTinymce().activeEditor.selection.getContent();
-                            console.log(content);
-                            editor.insertContent( '<span style ="font-weight :300;">'  + content + '</span>' );
-                    
-                          }
-                        },
-                        {
-                          type: 'menuitem',
-                          text: 'Normal',
-                          onAction: function () {
-                            let content = getTinymce().activeEditor.selection.getContent();
-                            console.log(content);
-                             editor.insertContent( '<span style ="font-weight :400;">'  + content + '</span>' );
-                          }
-                  
-                        },
-                        {
-                          type: 'menuitem',
-                          text: 'Bold',
-                          onAction: function () {
-                            let content = getTinymce().activeEditor.selection.getContent();
-                            console.log(content);
-                             editor.insertContent( '<span style ="font-weight :500;">'  + content + '</span>' );
-                          }
-                  
-                        },
-                        {
-                          type: 'menuitem',
-                          text: 'Extra Bold',
-                          onAction: function () {
-                            let content = getTinymce().activeEditor.selection.getContent();
-                            console.log(content);
-                             editor.insertContent( '<span style ="font-weight :700;">'  + content + '</span>' );
-                          }
-                  
-                        },
-                        {
-                          type: 'menuitem',
-                          text: 'Super Bold',
-                          onAction: function () {
-                            let content = getTinymce().activeEditor.selection.getContent();
-                            console.log(content);
-                             editor.insertContent( '<span style ="font-weight :900;">'  + content + '</span>' );
-                          }
-                        },
-                    ];
-                    callback(items);
-                  }
-                });
-
-              },
-            },
             contentTitleConfig : {
-                selector: '.content-container',
                 height: 500,
                 width:600,
                 menubar: false,
@@ -226,7 +139,6 @@ export default {
               },
             },
             contentBodyConfig : {
-                selector: '.content-body',
                 height: 500,
                 width:600,
                 menubar: false,
@@ -369,11 +281,5 @@ a {
     top:0px !important;
     margin-left: auto !important;
     margin-right: auto !important;
-}
-.content-container {
-  max-width:400px;
-  height:400px;
-  min-height: 400px;
-  background-color:blue;
 }
 </style>
