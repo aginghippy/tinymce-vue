@@ -1,26 +1,6 @@
 <template>
-  <div class="optin-widget-container">
-
-      <div class="img-container">
-        <editor v-model= "img" :api-key="apiKey" :init="imageEditorConfig" inline :initialValue="img" />  
-      </div>
-
-      
-      <div class="body-container">
-        <div class="content-title">
-            <editor v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
-        </div>
-        <div class="content-subtitle">
-            <editor v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
-        </div>
-        <div class="content-body">
-            <editor v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
-        </div>
-        <div class="form-container">
-          <input class="input-field" type="email" placeholder="Your Email Address" value="" name="emailAddress" required="">
-          <input class="submit-button" type="submit" value="Download" data-next-node="nextNodeInTheme">
-        </div>
-      </div>
+  <div class="tinymce-component">
+     <editor :api-key="apiKey" :init="imageEditorConfig" :initialValue="value" />
   </div>
    
  
@@ -28,18 +8,25 @@
 
 <script>
 import Editor from '@tinymce/tinymce-vue'
-import VueTinyMCE from './TinyMceVue'
 import { getTinymce } from './TinyMCE';
 
 export default {
-  name: 'HelloWorld',
+  name: 'TinyMCE',
   props: {
-    msg: String
+    value: {
+        required: true,
+    }
+  },
+  computed: {
+       
+        el() {
+            return this.el;
+        },
+      
   },
   components: {
 
-    Editor,
-    VueTinyMCE
+    Editor
   },
   mounted() {
         this.$nextTick(() => {
@@ -47,37 +34,20 @@ export default {
             
         });
   },
-  directives: {
-    bindtinymce: {
-      // directive definition
-      bind: function (el) {
-        console.log(getTinymce());
-        if (getTinymce() != null) {
-          console.log('init');
-             getTinymce().init(textEditorConfig)
-
-        }
-     
-      }
-    }
-  },
-
-  
   data() {
         return {
           apiKey: "rso1c77gamhg1jssil5cuuob1j3zyz66ldpf94x3pxdkzhgc",
           contentContainer: `Hi`,
-          contentTitle: `<span class="" style="">15% OFF</span>`,
+          contentTitle: `<div class="" style="">15% OFF</div>`,
           contentSubtitle: `<div class="" style="">YOUR PURCHASE</div>`,
           contentBody:  `<p id = 'content-body' style="text-align: center;">
                         I agree to receive recurring automated marketing text messages (e.g. cart reminders) at the phone number provided. Consent is not a condition to purchase. Msg & data rates may apply. Msg frequency varies. Reply HELP for help and STOP to cancel
                         </p>`,
           img:'<img class="img" src="https://chalakh-bot-js.s3.us-east-2.amazonaws.com/bhg/images/womans-apparel.webp" alt="">',
           imageEditorConfig : {
-            force_p_newlines : true,
+              target:this.el,
               menubar: false, // to hide the file menu ()
               toolbar:false, // to hide the default toolbar
-              resize_img_proportional: false, // so original aspect ratio is not maintained
               /* enable title field in the Image dialog*/
               image_title: true,
               /* enable automatic uploads of images represented by blob or data URIs*/
@@ -113,14 +83,15 @@ export default {
               },
               setup: function (editor) {
                 editor.on('change', function (e) {
+                  console.log('change event fired');
                   console.log(e);
-                  console.log('Content image to:  ' + editor.getContent());
+                  console.log('Content changed to:  ' + editor.getContent());
                 });
               },
               plugins: [
               'image imagetools'
               ],
-              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 100%}'
+              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
           },
           formFieldEditorConfig : {
   
@@ -202,7 +173,7 @@ export default {
               },
           },
           textEditorConfig : {
-                forced_root_block : false,
+     
                 height: 500,
                 width:600,
                 menubar: false,
@@ -343,6 +314,9 @@ li {
 }
 a {
   color: #42b983;
+},
+.tinymce-component {
+  width: 400px;
 }
 .tox-tinymce-inline {
     width:600px;
