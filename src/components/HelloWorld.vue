@@ -1,5 +1,12 @@
 <template>
   <div class="optin-widget-container">
+       <v-card
+        border="top"
+        color="red lighten-2"
+        dark
+      >
+        I'm an alert with a top border and red color
+      </v-card>
 
       <div class="img-container">
         <editor v-model= "img" :api-key="apiKey" :init="imageEditorConfig" inline :initialValue="img" />  
@@ -30,6 +37,7 @@
 import Editor from '@tinymce/tinymce-vue'
 import VueTinyMCE from './TinyMceVue'
 import { getTinymce } from './TinyMCE';
+import { VCard} from 'vuetify/lib'
 
 export default {
   name: 'HelloWorld',
@@ -39,7 +47,8 @@ export default {
   components: {
 
     Editor,
-    VueTinyMCE
+    VueTinyMCE,
+    VCard
   },
   mounted() {
         this.$nextTick(() => {
