@@ -1,33 +1,38 @@
 <template>
   <div class="optin-widget-container">
+          <v-color-picker
+        dot-size="25"
+        swatches-max-height="200"
+      ></v-color-picker>
        <v-card
-        border="top"
-        color="red lighten-2"
-        dark
+        elevation="2"
+        color="blue"
       >
-        I'm an alert with a top border and red color
+       
+      <div class="optin-widget-container">
+
+          <div class="img-container">
+            <editor v-model= "img" :api-key="apiKey" :init="imageEditorConfig" inline :initialValue="img" />  
+          </div>
+
+          
+          <div class="body-container">
+            <div class="content-title">
+                <editor v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
+            </div>
+            <div class="content-subtitle">
+                <editor v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
+            </div>
+            <div class="content-body">
+                <editor v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
+            </div>
+            <div class="form-container">
+              <input class="input-field" type="email" placeholder="Your Email Address" value="" name="emailAddress" required="">
+              <input class="submit-button" type="submit" value="Download" data-next-node="nextNodeInTheme">
+            </div>
+          </div>
+        </div>
       </v-card>
-
-      <div class="img-container">
-        <editor v-model= "img" :api-key="apiKey" :init="imageEditorConfig" inline :initialValue="img" />  
-      </div>
-
-      
-      <div class="body-container">
-        <div class="content-title">
-            <editor v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
-        </div>
-        <div class="content-subtitle">
-            <editor v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
-        </div>
-        <div class="content-body">
-            <editor v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
-        </div>
-        <div class="form-container">
-          <input class="input-field" type="email" placeholder="Your Email Address" value="" name="emailAddress" required="">
-          <input class="submit-button" type="submit" value="Download" data-next-node="nextNodeInTheme">
-        </div>
-      </div>
   </div>
    
  
@@ -37,7 +42,7 @@
 import Editor from '@tinymce/tinymce-vue'
 import VueTinyMCE from './TinyMceVue'
 import { getTinymce } from './TinyMCE';
-import { VCard} from 'vuetify/lib'
+import { VCard, VColorPicker} from 'vuetify/lib'
 
 export default {
   name: 'HelloWorld',
@@ -48,7 +53,8 @@ export default {
 
     Editor,
     VueTinyMCE,
-    VCard
+    VCard,
+    VColorPicker
   },
   mounted() {
         this.$nextTick(() => {
@@ -56,20 +62,7 @@ export default {
             
         });
   },
-  directives: {
-    bindtinymce: {
-      // directive definition
-      bind: function (el) {
-        console.log(getTinymce());
-        if (getTinymce() != null) {
-          console.log('init');
-             getTinymce().init(textEditorConfig)
 
-        }
-     
-      }
-    }
-  },
 
   
   data() {
