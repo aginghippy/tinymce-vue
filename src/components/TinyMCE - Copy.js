@@ -411,7 +411,7 @@ const  textEditorConfig = {
                   content = String(content).substring(0, index) + borderRadiusStyle + String(content).substring(index, content.length);
                   return content;
                 };
-                var processBorderRadiusOld = function (borderRadius) {
+                var processBorderRadius = function (borderRadius) {
                   let el = getTinymce().activeEditor.selection.getNode(); // will return the span
                      // content = getTinymce().activeEditor.selection.setContent(content);
                   el.style.borderRadius = borderRadius;
@@ -430,7 +430,7 @@ const  textEditorConfig = {
                   getTinymce().activeEditor.selection.setContent(content);*/
                 
                 };
-                var processBorderRadius = function (borderRadius) {
+                var processBorderRadiusOld = function (borderRadius) {
                    let content = getTinymce().activeEditor.selection.getContent({'format': 'html'});
                     if ((content == "") || (content == null)  ) {
                         return;
@@ -438,7 +438,7 @@ const  textEditorConfig = {
                     else {
                         console.log(content);
                         if (content.includes('<span')) { // add this styling to he end of the previous styling
-                           content = replaceBorderRadius(content, borderRadius);
+                           content = setBorderRadius(content, borderRadius);
                            // just replace all font-weights by 300;
                           if (content.startsWith("<span")) {
                             getTinymce().activeEditor.selection.setContent(content);

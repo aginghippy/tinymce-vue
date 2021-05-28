@@ -21,14 +21,12 @@
         <div class="email-field" >
             <editor class= "edit-email-field editor" v-model= "formFieldEmail" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formFieldEmail"/>
         </div>       
-        <div class="form-button">
-            <editor :ref="'form-button'" class= "edit-form-button editor" v-model= "formButton" :api-key="apiKey" inline :init="textEditorConfig" :initialValue="formButton"/>
+      
+
+        <div class="form-button" >
+            <TinyEditor class= "edit-form-button editor" v-model= "formButton" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formButton"/>
         </div>
       
-      </div>
-
-      <div class="field add-media-button">
-          <a href="" class="button -add-audio-video-message"  @click.prevent="saveChanges()">Save Changes</a>
       </div>
   </div>
    
@@ -37,9 +35,9 @@
 
 <script>
 import Editor from '@tinymce/tinymce-vue'
+import TinyEditor from './tinyEditor'
 import {Sketch} from 'vue-color'
 import VueTinyMCE from './TinyMceVue'
-import TinyEditor from './tinyEditor'
 import { apiKey, getTinymce, imageEditorConfig,textEditorConfig,formFieldEditorConfig } from './TinyMCE';
 
 export default {
@@ -75,14 +73,12 @@ export default {
                         </span>`,
           img:'<img class="img" src="https://chalakh-bot-js.s3.us-east-2.amazonaws.com/bhg/images/womans-apparel.webp" alt="">',
           formFieldEmail: '<span class= "edit-email-field"> Your Email Address </span>',
-          formButton: '<span class= "edit-form-button"> Submit </span>',
+          //formButton: '<span class= "edit-form-button"> Submit </span>',
           apiKey,
           imageEditorConfig,
           textEditorConfig,
           formFieldEditorConfig, 
-          updatedContent:this.value,
-
-          
+          updatedContent:this.value  
       };
   },
   created() {
@@ -91,9 +87,8 @@ export default {
   },
   computed: {
      
-        edited_form_data() {
-          return this.$refs['form-button'].value;
-            
+        formButton() {
+            return '<span class= "edit-form-button"> Submit </span>';
         },
         
     },
@@ -136,11 +131,6 @@ export default {
                 this.colorValue = 'rgba(' + color.rgba.r + ', ' + color.rgba.g + ', ' + color.rgba.b + ', ' + color.rgba.a + ')';
             }
         },
-        saveChanges() {
-          console.log(this.edited_form_data);
-          //let content_div = this.$refs['form-button'].value;
-          //console.log(content_div);
-        }
 
     },
   watch: {
