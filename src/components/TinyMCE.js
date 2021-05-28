@@ -24,7 +24,7 @@ const imageEditorConfig = {
       force_p_newlines : true,
       menubar: false, // to hide the file menu ()
       toolbar:false, // to hide the default toolbar
-      resize_img_proportional: false, // so original aspect ratio is not maintained
+      resize_img_proportional: false, // so original aspect ratio is not maintained and can be aletred
       /* enable title field in the Image dialog*/
       image_title: true,
       /* enable automatic uploads of images represented by blob or data URIs*/
@@ -235,12 +235,18 @@ const  textEditorConfig = {
           height: 500,
           width:700,
           menubar: false,
+          entity_encoding : "raw",
           fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt 60pt',
           toolbar: [
-              'undo redo | formatselect | bold italic strikethrough | forecolor backcolor | \
+              'undo redo | formatselect | italic strikethrough weight | forecolor backcolor | \
               align',
-             'weight | border | subscript superscript |fontselect | fontsizeselect font-weight lineheight |removeformat'
+             ' border | subscript superscript |fontselect | fontsizeselect font-weight lineheight |removeformat'
           ],
+         init_instance_callback: function (editor) {
+            editor.on('SetContent', function (e) {
+              console.log(e.content);
+            });
+          }, 
 
           //https://www.tiny.cloud/docs/demo/custom-toolbar-menu-button/
           setup: function (editor) {
@@ -250,16 +256,78 @@ const  textEditorConfig = {
 
             /* example, adding a toolbar menu button */
             editor.ui.registry.addMenuButton('weight', {
-              text: 'Weight',
+              text: 'Bold',
               fetch: function (callback) {
+                var setFontWeight = function (content, fontWeight) {
+                  content = content.replace("font-weight: ", "font-weight:");
+                 /* content = content.replace("font-weight: 300;", fontWeight);
+                  content = content.replace("font-weight: 400;", fontWeight);
+                  content = content.replace("font-weight: normal;", fontWeight);
+                  content = content.replace("font-weight: 700;", fontWeight);
+                  content = content.replace("font-weight: bold;", fontWeight);
+                  content = content.replace("font-weight: 800;", fontWeight);
+                  content = content.replace("font-weight: 900;", fontWeight);*/
+                  content = content.replace("font-weight:300;", fontWeight);
+                  content = content.replace("font-weight:400;", fontWeight);
+                  content = content.replace("font-weight:normal;", fontWeight);
+                  content = content.replace("font-weight:700;", fontWeight);
+                  content = content.replace("font-weight:bold;", fontWeight);
+                  content = content.replace("font-weight:800;", fontWeight);
+                  content = content.replace("font-weight:900;", fontWeight);
+                  return content;
+
+                };
+                var processFontWeight = function (fontWeight) {
+                   let content = getTinymce().activeEditor.selection.getContent({'format': 'html'});
+                    if ((content == "") || (content == null)  ) {
+                        return;
+                      }
+                    else {
+                        console.log(content);
+                        if (content.includes('<span')) { // add this styling to he end of the previous styling
+                           content = setFontWeight(content, fontWeight);
+                           // just replace all font-weights by 300;
+                          if (content.startsWith("<span")) {
+                            getTinymce().activeEditor.selection.setContent(content);
+                          } else  
+                            getTinymce().activeEditor.selection.setContent('<span style ="' + fontWeight + '">'  + content + '</span>');
+                        } else { // only text no span
+                            getTinymce().activeEditor.selection.setContent('<span style ="' + fontWeight + '">'  + content + '</span>');
+                        }          
+                    }
+                };
                 var items = [
                   {
                     type: 'menuitem',
                     text: 'Light',
-                    onAction: function () {
-                      let content = getTinymce().activeEditor.selection.getContent();
-                      console.log(content);
-                      editor.insertContent( '<span style ="font-weight :300;">'  + content + '</span>' );
+                    onAction: function () { 
+                      processFontWeight("font-weight:300;");
+                      /*let content = getTinymce().activeEditor.selection.getContent({'format': 'html'}); // does not help - gets text the first time and span the second time
+                      if ((content == "") || (content == null)  ) {
+                        return;
+                      }
+                      else {
+                        console.log(content);
+
+                        if (content.includes('<span')) { // add this styling to he end of the previous styling
+                           content = setFontWeight(content, 'font-weight:300;');
+                           // just replace all font-weights by 300;
+                          if (content.startsWith("<span")) {
+                            getTinymce().activeEditor.selection.setContent(content);
+                          } else  
+                            getTinymce().activeEditor.selection.setContent('<span style ="font-weight:300;">'  + content + '</span>');
+                         
+
+                      
+                            
+
+                        } else { // only text no span
+                            getTinymce().activeEditor.selection.setContent('<span style ="font-weight:300;">'  + content + '</span>');
+
+                        }
+                      
+                      } */
+                      //editor.insertContent( '<span style ="font-weight :300;">'  + content + '</span>' );
               
                     }
                   },
@@ -267,9 +335,10 @@ const  textEditorConfig = {
                     type: 'menuitem',
                     text: 'Normal',
                     onAction: function () {
-                      let content = getTinymce().activeEditor.selection.getContent();
+                      processFontWeight("font-weight:400;");
+                      /*let content = getTinymce().activeEditor.selection.getContent();
                       console.log(content);
-                       editor.insertContent( '<span style ="font-weight :400;">'  + content + '</span>' );
+                       editor.insertContent( '<span style ="font-weight: 400;">'  + content + '</span>' ); */
                     }
             
                   },
@@ -277,9 +346,10 @@ const  textEditorConfig = {
                     type: 'menuitem',
                     text: 'Bold',
                     onAction: function () {
-                      let content = getTinymce().activeEditor.selection.getContent();
+                      processFontWeight("font-weight:700;");
+                      /*let content = getTinymce().activeEditor.selection.getContent();
                       console.log(content);
-                       editor.insertContent( '<span style ="font-weight :500;">'  + content + '</span>' );
+                       editor.insertContent( '<span style ="font-weight: 700;">'  + content + '</span>' );*/
                     }
             
                   },
@@ -287,9 +357,10 @@ const  textEditorConfig = {
                     type: 'menuitem',
                     text: 'Extra Bold',
                     onAction: function () {
-                      let content = getTinymce().activeEditor.selection.getContent();
+                      processFontWeight("font-weight:800;");
+                      /*let content = getTinymce().activeEditor.selection.getContent();
                       console.log(content);
-                       editor.insertContent( '<span style ="font-weight :700;">'  + content + '</span>' );
+                       editor.insertContent( '<span style ="font-weight: 800;">'  + content + '</span>' );*/
                     }
             
                   },
@@ -297,9 +368,10 @@ const  textEditorConfig = {
                     type: 'menuitem',
                     text: 'Super Bold',
                     onAction: function () {
-                      let content = getTinymce().activeEditor.selection.getContent();
+                      processFontWeight("font-weight:900;");
+                      /*let content = getTinymce().activeEditor.selection.getContent();
                       console.log(content);
-                       editor.insertContent( '<span style ="font-weight :900;">'  + content + '</span>' );
+                       editor.insertContent( '<span style ="font-weight: 900;">'  + content + '</span>' );*/
                     }
                   },
                 ];
@@ -308,26 +380,57 @@ const  textEditorConfig = {
             
             });
             editor.ui.registry.addMenuButton('border', {
-              text: 'Borders',
+              /*text: 'Border',*/
+              icon: 'unselected',
               fetch: function (callback) {
+                var setBorder = function (content, border) {
+                  content = content.replace("border: ", "border:");
+                  content = content.replace("border:none;", border);
+                  content = content.replace("border:1px solid;", border);
+                  content = content.replace("border-bottom:1px solid;", border);
+                /*  content = content.replace("border: none;", border);
+                  content = content.replace("border: 1px solid;", border);
+                  content = content.replace("border-bottom: 1px solid;", border);*/
+                  return content;
+                };
+                var processBorder = function (border) {
+                   let content = getTinymce().activeEditor.selection.getContent({'format': 'html'});
+                    if ((content == "") || (content == null)  ) {
+                        return;
+                      }
+                    else {
+                        console.log(content);
+                        if (content.includes('<span')) { // add this styling to he end of the previous styling
+                           content = setBorder(content, border);
+                           // just replace all font-weights by 300;
+                          if (content.startsWith("<span")) {
+                            getTinymce().activeEditor.selection.setContent(content);
+                          } else  
+                            getTinymce().activeEditor.selection.setContent('<span style ="' + border + '">'  + content + '</span>');
+                        } else { // only text no span
+                            getTinymce().activeEditor.selection.setContent('<span style ="' + border + '">'  + content + '</span>');
+                        }          
+                    }
+                };
                 var items = [
                   {
                     type: 'menuitem',
                     text: 'No Border',
                     onAction: function () {
-                      let content = getTinymce().activeEditor.selection.getContent();
-                   
-                      editor.insertContent( '<span style ="border :none;">'  + content + '</span>' );
-              
+                      processBorder("border:none;");
+                      /*let content = getTinymce().activeEditor.selection.getContent();                 
+                      editor.insertContent( '<span style ="border :none;">'  + content + '</span>' );*/
                     }
                   },
                   {
                     type: 'menuitem',
                     text: 'All Borders',
                     onAction: function () {
+                      processBorder("border:1px solid;");
+                      /*
                       let content = getTinymce().activeEditor.selection.getContent();
-                      
-                       editor.insertContent( '<span style ="border :solid;">'  + content + '</span>' );
+                      console.log(getTinymce().activeEditor.getContent(), 'active content', content)
+                      editor.insertContent( '<span style ="border : 1px solid;">'  + content + '</span>' );*/
                     }
             
                   },
@@ -335,9 +438,9 @@ const  textEditorConfig = {
                     type: 'menuitem',
                     text: 'Bottom Border',
                     onAction: function () {
-                      let content = getTinymce().activeEditor.selection.getContent();
-                     
-                       editor.insertContent( '<span style ="border :none; border-bottom :solid">'  + content + '</span>' );
+                      processBorder("border-bottom:1px solid red;");
+                      /*let content = getTinymce().activeEditor.selection.getContent();
+                      editor.insertContent( '<span style ="border-bottom :1px solid;">'  + content + '</span>' );*/
                     }
             
                   }

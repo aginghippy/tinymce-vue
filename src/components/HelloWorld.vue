@@ -1,29 +1,33 @@
 <template>
   <div class="optin-widget-container">
 
+      <background-color :value="colors" @input="updateBackgroundColor" v-if="displayBGColorPicker" />
+
       <div class="img-container">
         <editor v-model= "img" :api-key="apiKey" :init="imageEditorConfig" inline :initialValue="img" />  
       </div>
 
       
-      <div class="body-container">
-        <div class="content-title">
-            <editor v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
+      <div class="body-container" @click = "showOrHideBGColorPicker($event)">
+        <div class="content-title"  >
+            <editor class= "edit-content-title editor" v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
         </div>
         <div class="content-subtitle">
-            <editor v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
+            <editor class= 'edit-content-subtitle editor' v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
         </div>
         <div class="content-body">
-            <editor v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
+            <editor class= "edit-content-body editor" v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
         </div>
-        <div class="form-container">
-          <div class="email-field">
-            <editor v-model= "formFieldEmail" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formFieldEmail"/>
-          </div>
-          <div class="">
-            <editor class= "submit-button" v-model= "formButton" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formButton"/>
-          </div>
+        
+      
+        <div class="email-field" >
+            <editor class= "edit-email-field editor" v-model= "formFieldEmail" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formFieldEmail"/>
         </div>
+          
+        <div class="form-button" >
+            <editor class= "edit-form-button editor" v-model= "formButton" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formButton"/>
+        </div>
+      
       </div>
   </div>
    
@@ -32,6 +36,7 @@
 
 <script>
 import Editor from '@tinymce/tinymce-vue'
+import {Sketch} from 'vue-color'
 import VueTinyMCE from './TinyMceVue'
 import { apiKey, getTinymce, imageEditorConfig,textEditorConfig,formFieldEditorConfig } from './TinyMCE';
 
@@ -43,7 +48,8 @@ export default {
   components: {
 
     Editor,
-    VueTinyMCE
+    VueTinyMCE,
+   'background-color': Sketch
   },
   mounted() {
         this.$nextTick(() => {
@@ -56,15 +62,17 @@ export default {
   
   data() {
         return { 
+          displayBGColorPicker:false,
+          colors:'black',
           contentContainer: `Hi`,
-          contentTitle: `<span class="" style="">15% OFF</span>`,
-          contentSubtitle: `<span class="" style="">YOUR PURCHASE</span>`,
-          contentBody:  `<span id = 'content-body' style="text-align: center;">
+          contentTitle: `<span class="edit-content-title" style="">15% OFF</span>`,
+          contentSubtitle: `<span class="edit-content-subtitle" style="">YOUR PURCHASE</span>`,
+          contentBody:  `<span class = 'edit-content-body' style="text-align: center;">
                         I agree to receive recurring automated marketing text messages (e.g. cart reminders) at the phone number provided. Consent is not a condition to purchase. Msg & data rates may apply. Msg frequency varies. Reply HELP for help and STOP to cancel
                         </span>`,
           img:'<img class="img" src="https://chalakh-bot-js.s3.us-east-2.amazonaws.com/bhg/images/womans-apparel.webp" alt="">',
-          formFieldEmail: '<span> Your Email Address </span>',
-          formButton: '<span> Submit </span>',
+          formFieldEmail: '<span class= "edit-email-field"> Your Email Address </span>',
+          formButton: '<span class= "edit-form-button"> Submit </span>',
           apiKey,
           imageEditorConfig,
           textEditorConfig,
@@ -81,6 +89,39 @@ export default {
 
             
         },
+        // target is element user clicked on
+        // currentTarget is element the event handler is attached
+        showOrHideBGColorPicker($event) {
+          this.displayBGColorPicker = true;
+          let targetClassName = $event.target.className;
+         // console.log($event.target);
+          const classNames = ['edit-content-title', 'edit-content-subtitle', 'edit-content-body', 'body-container','edit-email-field', 'edit-form-button'];
+          const className = classNames.find(v => targetClassName.includes(v));
+          //console.log(className, targetClassName);
+          switch(className) {
+              case 'edit-content-title': 
+              case 'edit-content-subtitle':
+              case 'edit-content-body': break;
+              case 'body-container': 
+              
+              case 'edit-email-field':
+              case 'edit-form-button':
+                 
+                  break;
+          }
+         // $event.target.style.backgroundColor = 'red';
+
+        },
+        updateBackgroundColor(color) {
+          console.log(color);
+            this.colors = color;
+            if(color.rgba.a == 1) {
+                this.colorValue = color.hex;
+            }
+            else {
+                this.colorValue = 'rgba(' + color.rgba.r + ', ' + color.rgba.g + ', ' + color.rgba.b + ', ' + color.rgba.a + ')';
+            }
+        },
 
     },
   watch: {
@@ -91,26 +132,32 @@ export default {
         },
         contentTitle: function() 
           {
-      
             // var myContent = this.Editor.activeEditor.getContent();
 
-            let a = getTinymce(),
-               b = a.util,
-               c = b.JSON;
-            console.log(c);
+            console.log(this.contentTitle);
+          },
+          contentSubtitle: function() 
+          {
+            console.log(this.contentSubtitle);
+           
+          },
+          contentBody: function() 
+          {
 
-            console.log(this.contentTitle, this.contentBody);
-            //let content_div = this.$refs['content-body'];
-            // console.log(content_div);
-            //let first_div =  document.getElementById("content-title");
-            //console.log(window.getComputedStyle(first_div));
-            //console.log(window.getComputedStyle(content_div));
-            /**
-             * pass editor content to vuex state
-             * and get that in parent component (watch vuex state)
-             */
+            console.log(this.contentBody);
+           
+          },
+          formFieldEmail: function() 
+          {
 
-            //this.$store.commit("editorContent", this.content);
+            console.log(this.formFieldEmail);
+           
+          },
+          formButton: function() 
+          {
+
+            console.log(this.formButton);
+           
           },
   }
 }
@@ -162,7 +209,7 @@ a {
 
 .content-title {
   font-size: 3.7rem;
-  padding-top: 4rem;
+  margin-top: 4rem;
   font-weight: 600;
   color: black;
   text-align: center;
@@ -189,6 +236,7 @@ a {
       align-items: center;
 }
 .email-field {
+  cursor: pointer;
   border: none;
   border-bottom: 1px solid;
   border-color: #9c9999;
@@ -199,6 +247,7 @@ a {
 
 }
 .submit-button {
+  cursor: pointer;
   margin-top: 1.5rem;
   min-height: 2.5rem;
   width: 70%;
@@ -213,6 +262,10 @@ a {
   font-weight: 500;
   border: 1px solid blue;
 
+}
+.editor:hover {
+  border: 1px solid #cccccc;
+  background-color: bisque;
 }
 
 .content-container {
