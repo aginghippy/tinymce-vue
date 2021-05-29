@@ -1,14 +1,14 @@
 <template>
-  <div class="optin-widget-container">
+  <div class="optin-widget-container" @click = "showOrHideBGColorPicker($event)">
 
       <background-color :value="colors" @input="updateBackgroundColor" v-if="displayBGColorPicker" />
 
-      <div class="img-container">
+      <div id = "img-container" class="img-container editable-content">
         <editor v-model= "img" :api-key="apiKey" :init="imageEditorConfig" inline :initialValue="img" />  
       </div>
 
       
-      <div class="body-container" @click = "showOrHideBGColorPicker($event)">
+      <div id="content-container" class = "content-container">
         <div class="content-title"  >
             <editor :ref="'content-title'" class= "edit-content-title editor" v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
         </div>
@@ -69,19 +69,20 @@ export default {
           displayBGColorPicker:false,
           colors:'black',
           contentContainer: `Hi`,
-          contentTitle: `<span class="edit-content-title content" style="">15% OFF</span>`,
-          contentSubtitle: `<span class="edit-content-subtitle content" style="">YOUR PURCHASE</span>`,
-          contentBody:  `<span class = 'edit-content-body content' style="text-align: center;">
+          contentTitle: `<span class="edit-content-title editable-content" style="">15% OFF</span>`,
+          contentSubtitle: `<span class="edit-content-subtitle editable-content" style="">YOUR PURCHASE</span>`,
+          contentBody:  `<span class = 'edit-content-body editable-content' style="text-align: center;">
                         I agree to receive recurring automated marketing text messages (e.g. cart reminders) at the phone number provided. Consent is not a condition to purchase. Msg & data rates may apply. Msg frequency varies. Reply HELP for help and STOP to cancel
                         </span>`,
-          img:'<img class="img content" src="https://chalakh-bot-js.s3.us-east-2.amazonaws.com/bhg/images/womans-apparel.webp" alt="">',
-          formFieldEmail: '<span class= "edit-email-field content"> Your Email Address </span>',
-          formButton: '<span class= "edit-form-button content"> Submit </span>',
+          img:'<img class="img editable-content" src="https://chalakh-bot-js.s3.us-east-2.amazonaws.com/bhg/images/womans-apparel.webp" alt="">',
+          formFieldEmail: '<span class= "edit-email-field editable-content"> Your Email Address </span>',
+          formButton: '<span class= "edit-form-button editable-content"> Submit </span>',
           apiKey,
           imageEditorConfig,
           textEditorConfig,
           formFieldEditorConfig, 
           updatedContent:this.value,
+          activeElement:"", 
 
           
       };
@@ -118,38 +119,37 @@ export default {
         // target is element user clicked on
         // currentTarget is element the event handler is attached
         showOrHideBGColorPicker($event) {
-          this.displayBGColorPicker = true;
+          console.log($event.target);
           let targetClassName = $event.target.className;
-         // console.log($event.target);
-          const classNames = ['edit-content-title', 'edit-content-subtitle', 'edit-content-body', 'body-container','edit-email-field', 'edit-form-button'];
+          const classNames = ['edit-content-title', 'edit-content-subtitle', 'edit-content-body', 'content-container','edit-email-field', 'edit-form-button'];
           const className = classNames.find(v => targetClassName.includes(v));
-          //console.log(className, targetClassName);
           switch(className) {
               case 'edit-content-title': 
               case 'edit-content-subtitle':
-              case 'edit-content-body': break;
-              case 'body-container': 
-              
+              case 'edit-content-body':  this.displayBGColorPicker = false; break;
+              case 'content-container':     
               case 'edit-email-field':
-              case 'edit-form-button':
-                 
-                  break;
+              case 'edit-form-button': this.activeElement = $event.target; this.displayBGColorPicker = true; break;
+              default: this.displayBGColorPicker = false;
           }
          // $event.target.style.backgroundColor = 'red';
 
         },
         updateBackgroundColor(color) {
-          console.log(color);
-            this.colors = color;
-            if(color.rgba.a == 1) {
-                this.colorValue = color.hex;
+          console.log('updating bg color')
+            let colorValue; 
+            if (color.rgba.a == 1) {
+                colorValue = color.hex;
             }
             else {
-                this.colorValue = 'rgba(' + color.rgba.r + ', ' + color.rgba.g + ', ' + color.rgba.b + ', ' + color.rgba.a + ')';
+                colorValue = 'rgba(' + color.rgba.r + ', ' + color.rgba.g + ', ' + color.rgba.b + ', ' + color.rgba.a + ')';
             }
+            this.activeElement.style.backgroundColor = colorValue;
         },
         saveChanges() {
-          console.log(this.edited_form_button);
+          let imgWidth = document.getElementById('img-container').clientWidth,
+              contentWidth = document.getElementById('content-container').clientWidth;
+          console.log(imgWidth, contentWidth);
         }
 
     },
@@ -224,13 +224,14 @@ a {
 }
 .img-container {
  /* flex: 1 1 50%; */
+
     
   }
 .img {
-    /*width: 100%;
-    height: 100%; */
+    max-width: 350px;
+    min-width: 250px;
 }
-.body-container {
+.content-container {
   flex:  1 1 50%; 
   padding-left: 0.5rem;
 
@@ -264,7 +265,7 @@ a {
   flex-direction: column;
       align-items: center;
 }
-span.edit-email-field.content {
+span.edit-email-field.editable-content {
   padding-top: 1rem;
   display: flex;
   justify-content: center;
@@ -280,7 +281,7 @@ span.edit-email-field.content {
   width: 60%;
 
 }
-span.edit-form-button.content {
+span.edit-form-button.editable-content {
   margin: auto;
   display: flex;
   justify-content: center;
@@ -299,9 +300,13 @@ span.edit-form-button.content {
   border: 1px solid #cccccc;
 
 }
-.editor:hover {
-  border: 1px solid #cccccc;
-  background-color: bisque;
+span.editable-content:hover, div.editable-content:hover {
+  border: 3px solid #ffe4c4;
+  background-color: #fff1e1;
+}
+
+.content-container:hover{
+  border: 3px solid #ffe4c4;
 }
 
 

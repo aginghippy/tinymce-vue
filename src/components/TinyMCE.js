@@ -239,8 +239,9 @@ const  textEditorConfig = {
           menubar: false,
           entity_encoding : "raw",
           fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt 60pt',
+          plugins: 'casechange',
           toolbar: [
-              'undo redo | formatselect | italic strikethrough weight | forecolor backcolor | height width |\
+              'undo redo | formatselect | italic strikethrough weight casechange | forecolor backcolor | height width |\
               align',
              ' border border-radius | subscript superscript |fontselect | fontsizeselect font-weight lineheight |removeformat'
           ],
@@ -260,7 +261,7 @@ const  textEditorConfig = {
 
             /* example, adding a toolbar menu button */
             editor.ui.registry.addMenuButton('weight', {
-              text: 'Bold',
+              icon: 'bold',
               fetch: function (callback) {
                 var processFontWeight = function (fontWeight) {
                    let el = getTinymce().activeEditor.selection.getNode(); // will return the span
@@ -309,6 +310,7 @@ const  textEditorConfig = {
                 callback(items);
               },   
             });
+
             editor.ui.registry.addMenuButton('border', {
               text: 'Border',
               
@@ -359,6 +361,7 @@ const  textEditorConfig = {
                 callback(items);
               }        
             });
+            
             editor.ui.registry.addMenuButton('border-radius', {
               text: 'Border Radius',
              
