@@ -411,17 +411,17 @@ const  textEditorConfig = {
                   content = String(content).substring(0, index) + borderRadiusStyle + String(content).substring(index, content.length);
                   return content;
                 };
-                var processBorderRadiusOld = function (borderRadius) {
+                var processBorderRadius = function (borderRadius) {
                   let el = getTinymce().activeEditor.selection.getNode(); // will return the span
                      // content = getTinymce().activeEditor.selection.setContent(content);
                   el.style.borderRadius = borderRadius;
 
                   // need the entire html of the node - innerHTML does not provide that, so add a container on the fly
 
-                  let container = document.createElement('div');
+                  /*let container = document.createElement('div');
                       container.appendChild(el.cloneNode(true)); // clone of the selected node
                   
-                  console.log(getTinymce());
+                  console.log(getTinymce());*/
                   //getTinymce().activeEditor.selection.setContent(container.innerHTML);
                   /*console.log(content);
                   if (String(content).includes('border-radius')) content = replaceBorderRadius(content, borderRadius);
@@ -430,7 +430,7 @@ const  textEditorConfig = {
                   getTinymce().activeEditor.selection.setContent(content);*/
                 
                 };
-                var processBorderRadius = function (borderRadius) {
+                var processBorderRadiusOld = function (borderRadius) {
                    let content = getTinymce().activeEditor.selection.getContent({'format': 'html'});
                     if ((content == "") || (content == null)  ) {
                         return;

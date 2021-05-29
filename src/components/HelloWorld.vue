@@ -10,16 +10,16 @@
       
       <div class="body-container" @click = "showOrHideBGColorPicker($event)">
         <div class="content-title"  >
-            <editor class= "edit-content-title editor" v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
+            <editor :ref="'content-title'" class= "edit-content-title editor" v-model= "contentTitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentTitle"/>
         </div>
         <div class="content-subtitle">
-            <editor class= 'edit-content-subtitle editor' v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
+            <editor :ref="'content-subtitle'" class= 'edit-content-subtitle editor' v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
         </div>
         <div class="content-body">
-            <editor class= "edit-content-body editor" v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
+            <editor :ref="'content-body'" class= "edit-content-body editor" v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
         </div>
         <div class="email-field" >
-            <editor class= "edit-email-field editor" v-model= "formFieldEmail" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formFieldEmail"/>
+            <editor :ref="'email-field'" class= "edit-email-field editor" v-model= "formFieldEmail" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formFieldEmail"/>
         </div>       
         <div class="form-button">
             <editor :ref="'form-button'" class= "edit-form-button editor" v-model= "formButton" :api-key="apiKey" inline :init="textEditorConfig" :initialValue="formButton"/>
@@ -91,17 +91,26 @@ export default {
   },
   computed: {
      
-        edited_form_data() {
-          return this.$refs['form-button'].value;
-            
+        edited_content_title() {
+          return this.$refs['content-title'].value;  
+        },
+        edited_content_subtitle() {
+          return this.$refs['content-subtitle'].value;  
+        },
+        edited_content_body() {
+          return this.$refs['content-body'].value;  
+        },
+        edited_email_field() {
+          return this.$refs['email-field'].value;  
+        },
+        edited_form_button() {
+          return this.$refs['form-button'].value;  
         },
         
     },
   methods: {
         initComponent() {
-          //console.log(this.dfreeBodyConfig, getTinymce());
-
-            
+          //console.log(this.dfreeBodyConfig, getTinymce());    
         },
         // target is element user clicked on
         // currentTarget is element the event handler is attached
@@ -137,9 +146,7 @@ export default {
             }
         },
         saveChanges() {
-          console.log(this.edited_form_data);
-          //let content_div = this.$refs['form-button'].value;
-          //console.log(content_div);
+          console.log(this.edited_form_button);
         }
 
     },
