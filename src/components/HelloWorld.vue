@@ -15,9 +15,10 @@
         <div class="content-subtitle">
             <editor :ref="'content-subtitle'" class= 'edit-content-subtitle editor' v-model= "contentSubtitle" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentSubtitle"/>
         </div>
-        <div class="content-body">
+       <!-- <div class="content-body">
             <editor :ref="'content-body'" class= "edit-content-body editor" v-model= "contentBody" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="contentBody"/>
         </div>
+        -->
         <div class="email-field" >
             <editor :ref="'email-field'" class= "edit-email-field editor" v-model= "formFieldEmail" :api-key="apiKey" :init="textEditorConfig" inline :initialValue="formFieldEmail"/>
         </div>       
@@ -68,14 +69,14 @@ export default {
           displayBGColorPicker:false,
           colors:'black',
           contentContainer: `Hi`,
-          contentTitle: `<span class="edit-content-title" style="">15% OFF</span>`,
-          contentSubtitle: `<span class="edit-content-subtitle" style="">YOUR PURCHASE</span>`,
-          contentBody:  `<span class = 'edit-content-body' style="text-align: center;">
+          contentTitle: `<span class="edit-content-title content" style="">15% OFF</span>`,
+          contentSubtitle: `<span class="edit-content-subtitle content" style="">YOUR PURCHASE</span>`,
+          contentBody:  `<span class = 'edit-content-body content' style="text-align: center;">
                         I agree to receive recurring automated marketing text messages (e.g. cart reminders) at the phone number provided. Consent is not a condition to purchase. Msg & data rates may apply. Msg frequency varies. Reply HELP for help and STOP to cancel
                         </span>`,
-          img:'<img class="img" src="https://chalakh-bot-js.s3.us-east-2.amazonaws.com/bhg/images/womans-apparel.webp" alt="">',
-          formFieldEmail: '<span class= "edit-email-field"> Your Email Address </span>',
-          formButton: '<span class= "edit-form-button"> Submit </span>',
+          img:'<img class="img content" src="https://chalakh-bot-js.s3.us-east-2.amazonaws.com/bhg/images/womans-apparel.webp" alt="">',
+          formFieldEmail: '<span class= "edit-email-field content"> Your Email Address </span>',
+          formButton: '<span class= "edit-form-button content"> Submit </span>',
           apiKey,
           imageEditorConfig,
           textEditorConfig,
@@ -110,7 +111,9 @@ export default {
     },
   methods: {
         initComponent() {
-          //console.log(this.dfreeBodyConfig, getTinymce());    
+          //console.log(this.dfreeBodyConfig, getTinymce());
+
+            
         },
         // target is element user clicked on
         // currentTarget is element the event handler is attached
@@ -261,7 +264,7 @@ a {
   flex-direction: column;
       align-items: center;
 }
-span.edit-email-field {
+span.edit-email-field.content {
   padding-top: 1rem;
   display: flex;
   justify-content: center;
@@ -277,7 +280,7 @@ span.edit-email-field {
   width: 60%;
 
 }
-span.edit-form-button {
+span.edit-form-button.content {
   margin: auto;
   display: flex;
   justify-content: center;
